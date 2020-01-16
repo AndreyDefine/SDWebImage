@@ -312,6 +312,12 @@ didReceiveResponse:(NSURLResponse *)response
     }
     
     NSInteger expected = (NSInteger)response.expectedContentLength;
+    NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+    if(headers[@"Content-Length"] &&
+       ([headers[@"Content-Length"] isKindOfClass:[NSNumber class]] ||
+       [headers[@"Content-Length"] isKindOfClass:[NSString class]])) {
+        expected = [headers[@"Content-Length"] integerValue];
+    }
     expected = expected > 0 ? expected : 0;
     self.expectedSize = expected;
     self.response = response;
